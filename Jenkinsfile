@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        docker { image 'node:18-alpine3.18' }
+        docker { 
+            image 'node:18-alpine3.18'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
     environment {
         DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
@@ -27,19 +30,20 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}")
-                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS}") {
-                        docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_ID}").push()
-                    }
+                    dockerImage = docker.build "${DOCKER_IMAGE_NAME}:${BUILD_ID}"
+                    // docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}")
+                    // docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS}") {
+                    //     docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_ID}").push()
+                    // }
                 }
             }
         }
-        stage('Deploy') {
-            steps {
-                script {
-                    docker.run("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--name react-app-container -p 8080:80 -d")
-                }
-            }
-        }
+        // stage('Deploy') {
+        //     steps {
+        //         script {
+        //             docker.run("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--name react-app-container -p 8080:80 -d")
+        //         }
+        //     }
+        // }
     }
 }
