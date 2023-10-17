@@ -130,12 +130,12 @@ describe(`TodoForm test suite`, () => {
         test('should display an error modal if the no todos are supplied', async () => {
 
             render(
-                <MemoryRouter initialEntries={[`/add`]}>
+                <MemoryRouter initialEntries={[`/edit`]}>
                     <TodoForm submitTodo={mockSubmitTodo} todos={[]} />
                 </MemoryRouter>
             );
 
-            const modalMessage = screen.getByText(`There are no todos loaded, you will be returned to the home page to try a reload`);
+            const modalMessage = await screen.getByText(`There are no todos loaded, you will be returned to the home page to try a reload`);
             
             expect(modalMessage).toBeInTheDocument();
         });

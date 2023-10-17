@@ -6,7 +6,7 @@ export const getTodosService = async () => {
         if (res.data?.length > 0) {
             // Added for SQL databases
             res.data.forEach(todo => {
-                if (todo.id) {
+                if (todo?.id) {
                     delete Object.assign(todo, { [`_id`]: todo[`id`].toString() })[`id`];
                 }
             });   
@@ -22,7 +22,7 @@ export const getTodosService = async () => {
 export const submitTodoService = async submittedTodo => {
     try {
         // Added for SQL databases - using parseInt may return a number if the string begins with one!
-        if (!isNaN(Number(submittedTodo._id))) {
+        if (!isNaN(Number(submittedTodo?._id))) {
             delete Object.assign(submittedTodo, { [`id`]: parseInt(submittedTodo[`_id`]) })[`_id`];
         }
         // Changed for SQL databases

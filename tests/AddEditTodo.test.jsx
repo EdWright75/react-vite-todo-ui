@@ -76,7 +76,8 @@ describe(`Tests for AddEditTodo`, () => {
         test(`it should call mockSubmit when the form is submitted`, async () => {
 
             const testDesc = `Edited description`;
-            const submittedTodo = { ...sampleTodos[2], todoDescription: testDesc, todoDateCreated: new Date(sampleTodos[2].todoDateCreated).toUTCString() };
+            
+            const submittedTodo = { ...sampleTodos[2], todoDescription: testDesc, todoDateCreated: new Date(sampleTodos[2].todoDateCreated).toISOString() };
 
             const descInput = screen.getByDisplayValue(sampleTodos[2].todoDescription);
 
@@ -87,7 +88,7 @@ describe(`Tests for AddEditTodo`, () => {
 
             await userEvent.click(submitBtn);
 
-            expect(mockSubmitTodo).toHaveBeenCalled();
+            // expect(mockSubmitTodo).toHaveBeenCalled();
             expect(mockSubmitTodo).toHaveBeenCalledWith(submittedTodo);
         });
         
