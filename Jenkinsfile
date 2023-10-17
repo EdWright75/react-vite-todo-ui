@@ -1,9 +1,10 @@
 pipeline {
     agent {
-        docker { 
-            image 'node:18-alpine3.18'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+        any
+        // docker { 
+        //     image 'node:18-alpine3.18'
+        //     args '-v /var/run/docker.sock:/var/run/docker.sock'
+        // }
     }
     environment {
         DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
