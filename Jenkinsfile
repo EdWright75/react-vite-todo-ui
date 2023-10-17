@@ -2,13 +2,7 @@ pipeline {
     agent {
         docker { 
             image 'node:18-alpine3.18'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
-    }
-    environment {
-        DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
-        BUILD_ID = 'env.BUILD_ID'
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
     }
     stages {
         stage('Checkout') {
@@ -34,25 +28,42 @@ pipeline {
             archiveArtifacts(artifacts: 'dist/**') // Adjust the path as needed
         }
     }
-    pipeline {
-        agent any
-        stages {
-            stage('Build Docker Image') {
-                steps {
-                    script {
-                        // Retrieve the result of 'Build React App' from the artifact
-                        def buildArtifacts = findFiles(glob: 'dist/**')
+}
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
+        BUILD_ID = 'env.BUILD_ID'
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
+    }
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Retrieve the result of 'Build React App' from the artifact
+                    def buildArtifacts = findFiles(glob: 'dist/**')
                     
-                        // Build the Docker image using the artifacts
-                        dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--build-arg APP_ARTIFACT=${buildArtifacts[0].name}")
+                    // Build the Docker image using the artifacts
+                    dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--build-arg APP_ARTIFACT=${buildArtifacts[0].name}")
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push the Docker image to Docker Hub
+                    withCredentials("${DOCKER_HUB_CREDENTIALS}") {
+                        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                            dockerImage.push()
+                        }
                     }
                 }
             }
-            stage('Deploy') {
-                steps {
-                    script {
-                        docker.run("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--name react-app-container -p 8080:80 -d")
-                    }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    docker.run("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--name react-app-container -p 8080:80 -d")
                 }
             }
         }
