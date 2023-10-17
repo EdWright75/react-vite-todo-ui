@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
         DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
-        BUILD_ID = env.BUILD_ID
+        BUILD_ID = 'env.BUILD_ID'
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
     }
     stages {
