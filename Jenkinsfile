@@ -1,11 +1,10 @@
 pipeline {
-    agent any // {
-        // any
-        // docker { 
-        //     image 'node:18-alpine3.18'
-        //     args '-v /var/run/docker.sock:/var/run/docker.sock'
-        // }
-    // }
+    agent {
+        docker { 
+            image 'node:18-alpine3.18'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
     environment {
         DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
         BUILD_ID = 'env.BUILD_ID'
@@ -28,23 +27,34 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    dockerImage = docker.build "${DOCKER_IMAGE_NAME}:${BUILD_ID}"
-                    // docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}")
-                    // docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CREDENTIALS}") {
-                    //     docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_ID}").push()
-                    // }
+    }
+    post {
+        success {
+            // Store the result of the 'Build React App' stage in an artifact
+            archiveArtifacts(artifacts: 'dist/**') // Adjust the path as needed
+        }
+    }
+    pipeline {
+        agent any
+        stages {
+            stage('Build Docker Image') {
+                steps {
+                    script {
+                        // Retrieve the result of 'Build React App' from the artifact
+                        def buildArtifacts = findFiles(glob: 'dist/**')
+                    
+                        // Build the Docker image using the artifacts
+                        dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--build-arg APP_ARTIFACT=${buildArtifacts[0].name}")
+                    }
+                }
+            }
+            stage('Deploy') {
+                steps {
+                    script {
+                        docker.run("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--name react-app-container -p 8080:80 -d")
+                    }
                 }
             }
         }
-        // stage('Deploy') {
-        //     steps {
-        //         script {
-        //             docker.run("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--name react-app-container -p 8080:80 -d")
-        //         }
-        //     }
-        // }
     }
 }
