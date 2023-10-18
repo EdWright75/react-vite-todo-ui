@@ -2,8 +2,11 @@ pipeline {
     agent any
     tools {
         nodejs 'Node-20'
-        docker 'docker'
-
+    }
+    environment {
+        DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
+        BUILD_ID = 'env.BUILD_ID'
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
     }
     stages {
         stage('Install Dependencies') {
