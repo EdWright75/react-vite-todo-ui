@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Test Application') {
             steps {
-                sh 'npm run test-ci'
+                sh './jenkins_scripts/test.sh'
             }
         }
         stage('Build React App') {
