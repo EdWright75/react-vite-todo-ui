@@ -9,6 +9,7 @@ pipeline {
                 sh 'node -v'
                 sh 'npm cache clean --force'
                 sh 'npm cache verify'
+                sh 'pwd'
                 sh 'npm install'
             }
         }
