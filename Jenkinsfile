@@ -14,6 +14,7 @@ pipeline {
         stage('Test Application') {
             steps {
                 sh 'pwd'
+                sh 'ls'
                 sh './jenkins_scripts/test.sh'
             }
         }
