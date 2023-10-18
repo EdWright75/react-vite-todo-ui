@@ -6,17 +6,11 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                sh 'node -v'
-                sh 'npm cache clean --force'
-                sh 'npm cache verify'
-                sh 'pwd'
                 sh 'npm install'
             }
         }
         stage('Test Application') {
             steps {
-                sh 'pwd'
-                sh 'ls ./tests'
                 sh 'npm run test-ci'
             }
         }
