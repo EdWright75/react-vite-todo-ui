@@ -40,7 +40,7 @@ pipeline {
                 script {
                     // Push the Docker image to a registry (e.g., Docker Hub)
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
-                        docker.build("my-docker-image:${BUILD_ID}").push()
+                        docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}").push()
                     }
                 }
             }
