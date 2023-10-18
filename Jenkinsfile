@@ -24,5 +24,13 @@ pipeline {
                 sh 'npm run build'
             }
         }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}")
+                }
+            }
+        }
     }
 }
