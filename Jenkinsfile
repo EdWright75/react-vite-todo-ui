@@ -24,23 +24,23 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Run a shell command to find the 'dist' folder and its contents
-                    // def distArtifacts = sh(returnStdout: true, script: 'find dist/ -type f -print')
+        // stage('Build Docker Image') {
+        //     steps {
+        //         script {
+        //             // Run a shell command to find the 'dist' folder and its contents
+        //             // def distArtifacts = sh(returnStdout: true, script: 'find dist/ -type f -print')
                     
-                    // Build the Docker image and copy the 'dist' folder artifacts
-                    def dockerImage = docker.build("my-docker-image:${BUILD_ID}") // , "--build-arg APP_ARTIFACT=${distArtifacts}", "-f Dockerfile .")
-                }
-            }
-        }
+        //             // Build the Docker image and copy the 'dist' folder artifacts
+        //             def dockerImage = docker.build("my-docker-image:${BUILD_ID}") // , "--build-arg APP_ARTIFACT=${distArtifacts}", "-f Dockerfile .")
+        //         }
+        //     }
+        // }
         stage('Push Docker Image') {
             steps {
                 script {
                     // Push the Docker image to a registry (e.g., Docker Hub)
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
-                        dockerImage.push()
+                        docker.build("my-docker-image:${BUILD_ID}").push()
                     }
                 }
             }
