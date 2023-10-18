@@ -5,7 +5,7 @@ pipeline {
     }
     environment {
         DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
-        BUILD_ID = 'env.BUILD_ID'
+        BUILD_ID = env.BUILD_ID
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
     }
     stages {
@@ -24,17 +24,6 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //             // Run a shell command to find the 'dist' folder and its contents
-        //             // def distArtifacts = sh(returnStdout: true, script: 'find dist/ -type f -print')
-                    
-        //             // Build the Docker image and copy the 'dist' folder artifacts
-        //             def dockerImage = docker.build("my-docker-image:${BUILD_ID}") // , "--build-arg APP_ARTIFACT=${distArtifacts}", "-f Dockerfile .")
-        //         }
-        //     }
-        // }
         stage('Push Docker Image') {
             steps {
                 script {
