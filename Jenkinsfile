@@ -7,6 +7,7 @@ pipeline {
         DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
         BUILD_ID = "${env.BUILD_ID}"
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
+        DOCKER_HUB_PASSWORD = credentials('docker-hub').password
     }
     stages {
         stage('Install Dependencies') {
@@ -27,12 +28,26 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Push the Docker image to a registry (e.g., Docker Hub)
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
-                        docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}").push()
+                    // Use --password-stdin for secure password handling
+                    withCredentials([string(credentialsId: 'docker-hub', variable: 'DOCKER_HUB_USERNAME')]) {
+                        withCredentials([string(credentialsId: 'docker-hub', variable: 'DOCKER_HUB_PASSWORD')]) {
+                            // Use --password-stdin to securely provide the Docker Hub password
+                            sh """
+                            echo \${DOCKER_HUB_PASSWORD} | docker login -u \${DOCKER_HUB_USERNAME} --password-stdin
+                            docker build "${DOCKER_IMAGE_NAME}:${BUILD_ID}" .
+                            docker push "${DOCKER_IMAGE_NAME}:${BUILD_ID}"
+                            """
+                        }
                     }
                 }
             }
         }
     }
 }
+
+
+
+
+
+
+
