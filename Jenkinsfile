@@ -28,16 +28,14 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Get Docker Hub credentials from Jenkins credentials
-                    def credentials = credentials('docker-hub')
-                    def DOCKER_HUB_USERNAME = credentials.username
-                    def DOCKER_HUB_PASSWORD = credentials.password
-                    // Use --password-stdin for secure password handling
-                    sh """
-                    echo \${DOCKER_HUB_PASSWORD} | docker login -u \${DOCKER_HUB_USERNAME} --password-stdin
-                    docker build "${DOCKER_IMAGE_NAME}:${BUILD_ID}" .
-                    docker push "${DOCKER_IMAGE_NAME}:${BUILD_ID}"
-                    """
+                    // Use credentials directly within the withCredentials block
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                        sh """
+                        echo \${DOCKER_HUB_PASSWORD} | docker login -u \${DOCKER_HUB_USERNAME} --password-stdin
+                        docker build "${DOCKER_IMAGE_NAME}:${BUILD_ID}" .
+                        docker push "${DOCKER_IMAGE_NAME}:${BUILD_ID}"
+                        """
+                    }
                 }
             }
         }
