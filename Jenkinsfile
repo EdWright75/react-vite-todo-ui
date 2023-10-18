@@ -4,11 +4,11 @@ pipeline {
         nodejs 'Node-18'
     }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/EdWright75/react-vite-todo-ui.git']]])
-            }
-        }
+        // stage('Checkout') {
+        //     steps {
+        //         checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/EdWright75/react-vite-todo-ui.git']]])
+        //     }
+        // }
         stage('Test') {
             steps {
                 sh 'npm install'
