@@ -16,11 +16,7 @@ pipeline {
         stage('Test Application') {
             steps {
                 sh 'pwd'
-                sh 'ls'
-                sh 'cd ./tests'
-                sh 'ls'
-                sh 'cd ./..'
-                sh 'pwd'
+                sh 'ls ./tests'
                 sh 'npm run test-ci'
             }
         }
