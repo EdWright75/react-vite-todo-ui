@@ -33,6 +33,7 @@ pipeline {
                         sh """
                         echo \${DOCKER_HUB_PASSWORD} | docker login -u \${DOCKER_HUB_USERNAME} --password-stdin
                         docker build -t "${DOCKER_IMAGE_NAME}:${BUILD_ID}" .
+                        docker tag "${DOCKER_IMAGE_NAME}:${BUILD_ID}" "${DOCKER_IMAGE_NAME}:latest"
                         docker push "${DOCKER_IMAGE_NAME}:${BUILD_ID}"
                         docker push "${DOCKER_IMAGE_NAME}:latest"
                         """
