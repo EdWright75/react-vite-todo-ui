@@ -1,13 +1,11 @@
 pipeline {
     agent any
     tools {
-        nodejs 'Node-20'
+        nodejs 'Node-18'
     }
     environment {
-        DOCKER_IMAGE_NAME = 'edwright6975df/todo-react-app'
+        DOCKER_IMAGE_NAME = 'todo-react-app'
         BUILD_ID = "${env.BUILD_ID}"
-        // DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
-        // DOCKER_HUB_PASSWORD = credentials('docker-hub').password
     }
     stages {
         stage('Install Dependencies') {
@@ -32,10 +30,10 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_HUB_USERNAME', passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
                         sh """
                         echo \${DOCKER_HUB_PASSWORD} | docker login -u \${DOCKER_HUB_USERNAME} --password-stdin
-                        docker build -t "${DOCKER_IMAGE_NAME}:${BUILD_ID}" .
-                        docker tag "${DOCKER_IMAGE_NAME}:${BUILD_ID}" "${DOCKER_IMAGE_NAME}:latest"
-                        docker push "${DOCKER_IMAGE_NAME}:${BUILD_ID}"
-                        docker push "${DOCKER_IMAGE_NAME}:latest"
+                        docker build -t "${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:${BUILD_ID}" .
+                        docker tag "${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:${BUILD_ID}" "${DOCKER_IMAGE_NAME}:latest"
+                        docker push "${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:${BUILD_ID}"
+                        docker push "${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:latest"
                         """
                     }
                 }
