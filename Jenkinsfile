@@ -27,8 +27,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}")
+                    // Retrieve the result of 'Build React App' from the artifact
+                    def buildArtifacts = findFiles(glob: 'dist/**')
+                    
+                    // Build the Docker image using the artifacts
+                    dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${BUILD_ID}", "--build-arg APP_ARTIFACT=${buildArtifacts[0].name}")
                 }
             }
         }
