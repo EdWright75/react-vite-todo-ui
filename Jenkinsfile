@@ -31,7 +31,7 @@ pipeline {
                     // def distArtifacts = sh(returnStdout: true, script: 'find dist/ -type f -print')
                     
                     // Build the Docker image and copy the 'dist' folder artifacts
-                    docker.build("my-docker-image:${BUILD_ID}") // , "--build-arg APP_ARTIFACT=${distArtifacts}", "-f Dockerfile .")
+                    def dockerImage = docker.build("my-docker-image:${BUILD_ID}") // , "--build-arg APP_ARTIFACT=${distArtifacts}", "-f Dockerfile .")
                 }
             }
         }
