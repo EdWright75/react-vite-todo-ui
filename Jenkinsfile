@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         nodejs 'Node-18'
+        docker 'docker'
     }
     environment {
         DOCKER_IMAGE_NAME = 'todo-react-app'
