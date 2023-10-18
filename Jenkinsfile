@@ -28,10 +28,20 @@ pipeline {
             steps {
                 script {
                     // Run a shell command to find the 'dist' folder and its contents
-                    def distArtifacts = sh(returnStdout: true, script: 'find dist/ -type f -print')
+                    // def distArtifacts = sh(returnStdout: true, script: 'find dist/ -type f -print')
                     
                     // Build the Docker image and copy the 'dist' folder artifacts
-                    docker.build("my-docker-image:${env.BUILD_ID}", "--build-arg APP_ARTIFACT=${distArtifacts}", "-f Dockerfile .")
+                    docker.build("my-docker-image:${BUILD_ID}") // , "--build-arg APP_ARTIFACT=${distArtifacts}", "-f Dockerfile .")
+                }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push the Docker image to a registry (e.g., Docker Hub)
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        dockerImage.push()
+                    }
                 }
             }
         }
