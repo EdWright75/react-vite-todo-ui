@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     // Push the Docker image to a registry (e.g., Docker Hub)
-                    docker.withRegistry('https://registry.hub.docker.com', "${Docker_Hub_Credentials}") {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
                         dockerImage.push()
                     }
                 }
