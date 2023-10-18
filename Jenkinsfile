@@ -17,7 +17,9 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'ls'
-                sh './jenkins_scripts/test.sh'
+                sh 'cd tests'
+                sh 'ls'
+                sh 'npm run test-ci'
             }
         }
         stage('Build React App') {
