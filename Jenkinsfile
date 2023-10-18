@@ -9,10 +9,14 @@ pipeline {
         //         checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/EdWright75/react-vite-todo-ui.git']]])
         //     }
         // }
-        stage('Test') {
+        stage('Install Dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm test'
+            }
+        }
+        stage('Test Application') {
+            steps {
+                sh 'npm run test-ci'
             }
         }
         stage('Build React App') {
