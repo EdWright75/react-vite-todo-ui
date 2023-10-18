@@ -17,8 +17,10 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'ls'
-                sh 'cd tests'
+                sh 'cd ./tests'
                 sh 'ls'
+                sh 'cd ./..'
+                sh 'pwd'
                 sh 'npm run test-ci'
             }
         }
